@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新增文创作品 · 时序档案馆</title>
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/upload.css">
+</head>
+<body>
+<div class="board ua-bg">
+<div class="ua-wrap">
+
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <div>
+        <span class="zh">时序档案馆</span>
+        <span class="en">TIME ARCHIVE</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="on" href="/admin/upload">作品管理</a>
+    </nav>
+    <div class="ua-user">
+      <span class="tag gold">当前管理员</span>
+      <span class="ua-uname"><%= admin.username %></span>
+      <form method="post" action="/admin/logout" class="ua-logout">
+        <button class="btn ghost sm" type="submit">退出</button>
+      </form>
+    </div>
+  </header>
+
+  <!-- 页头 -->
+  <div class="ua-head">
+    <div>
+      <div class="eyebrow">管理后台 / 作品管理</div>
+      <h1 class="h2">新增文创作品</h1>
+    </div>
+    <span class="tag">当前为全站唯一写入入口</span>
+  </div>
+
+  <form id="uploadForm" class="ua-grid" autocomplete="off" novalidate>
+
+    <!-- 左列：封面 + 作品信息 -->
+    <div class="ua-col">
+
+      <section class="panel">
+        <div class="sect-head"><i class="bar"></i><h3 class="ua-h3">作品封面</h3><span class="ua-req">必填 · 建议 4:3</span></div>
+
+        <div class="drop ua-drop" id="dropZone" tabindex="0" role="button" aria-label="选择或拖拽封面图片">
+          <input id="coverImage" name="coverImage" type="file" accept="image/jpeg,image/png,image/svg+xml,image/webp" hidden>
+          <div class="ua-drop-inner" id="dropInner">
+            <div class="ua-drop-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="6" y="10" width="36" height="28" rx="4"/>
+                <circle cx="17" cy="21" r="3.2"/>
+                <path d="M6 32l10-8 7 6 6-5 13 9"/>
+              </svg>
+            </div>
+            <p>拖拽图片到此处，或 <em>点击选择文件</em></p>
+            <span class="ua-hint">支持 JPG / PNG / SVG / WebP · 单文件 ≤ <%= limits.maxMB %> MB · 长边 ≤ <%= limits.maxEdge %> px</span>
+          </div>
+          <div class="ua-preview" id="previewBox" hidden>
+            <img id="previewImg" alt="封面预览">
+            <div class="fallback" id="previewFallback" hidden>
+              <span class="txt">图片加载失败</span>
+              <button type="button" class="retry" id="previewRetry">重新选择</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="derived" aria-label="三档派生结果">
+          <div class="d"><div class="ph"><img data-tier="original" alt="原图档"></div>
+            <div class="lb"><b>原图 original</b><span>长边 ≤ <%= limits.maxEdge %> px</span></div></div>
+          <div class="d"><div class="ph"><img data-tier="medium" alt="中图档"></div>
+            <div class="lb"><b>中图 medium</b><span>1200 px 档</span></div></div>
+          <div class="d"><div class="ph"><img data-tier="thumb" alt="缩略图档"></div>
+            <div class="lb"><b>缩略图 thumb</b><span>480 px 档</span></div></div>
+        </div>
+        <p class="ua-tip">提交后自动派生三档 WebP：原图仅管理端可见，前台只下发中图与缩略图。</p>
+      </section>
+
+      <section class="panel">
+        <div class="sect-head"><i class="bar"></i><h3 class="ua-h3">作品信息</h3><span class="ua-req">* 为必填</span></div>
+
+        <div class="ua-fields">
+          <div class="field">
+            <label for="title">作品名称 <em>*</em></label>
+            <input class="input" id="title" name="title" type="text" maxlength="60" placeholder="例如：旧城二十四时">
+          </div>
+
+          <div class="ua-row2">
+            <div class="field">
+              <label for="categoryId">所属分类 <em>*</em></label>
+              <select class="input" id="categoryId" name="categoryId">
+                <option value="">请选择时间坐标</option>
+                <% categories.forEach(function (c) { %>
+                <option value="<%= c.id %>"><%= c.id %> · <%= c.name %></option>
+                <% }); %>
+              </select>
+            </div>
+            <div class="field">
+              <label for="authorId">创作者 <em>*</em></label>
+              <select class="input" id="authorId" name="authorId">
+                <option value="">请选择创作者</option>
+                <% creators.forEach(function (c) { %>
+                <option value="<%= c.id %>"><%= c.name %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+
+          <div class="ua-row2">
+            <div class="field">
+              <label for="createdAt">创作时间</label>
+              <input class="input" id="createdAt" name="createdAt" type="date">
+            </div>
+            <div class="field">
+              <label for="materials">使用材料 / 创作工具</label>
+              <input class="input" id="materials" name="materials" type="text" maxlength="200" placeholder="例如：纸本设色 · 120 × 46 cm">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="concept">创作理念</label>
+            <textarea class="input ua-textarea" id="concept" name="concept" maxlength="1000" rows="3" placeholder="创作者想表达的内容"></textarea>
+            <span class="ua-count" data-for="concept">0 / 1000</span>
+          </div>
+
+          <div class="field">
+            <label for="description">作品简介</label>
+            <textarea class="input ua-textarea" id="description" name="description" maxlength="500" rows="3" placeholder="一到两句作品说明"></textarea>
+            <span class="ua-count" data-for="description">0 / 500</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 右列：前台预览 + 校验提示 + 操作 -->
+    <div class="ua-col">
+      <section class="panel">
+        <div class="sect-head"><i class="bar"></i><h3 class="ua-h3">前台卡片实时预览</h3></div>
+        <article class="card">
+          <div class="thumb">
+            <img id="cardImg" alt="作品卡片预览" hidden>
+            <div class="fallback" id="cardFallback">
+              <span class="txt">封面待上传</span>
+            </div>
+            <span class="cat" id="cardCat">未分类</span>
+            <span class="yr" id="cardYear">年份</span>
+          </div>
+          <div class="meta">
+            <h4 id="cardTitle">作品名称</h4>
+            <p id="cardMeta">创作者 · 分类</p>
+          </div>
+        </article>
+        <p class="ua-tip">列表与详情页只下发中图 / 缩略图地址，原图地址仅在管理后台可见。</p>
+      </section>
+
+      <section class="panel">
+        <div class="sect-head"><i class="bar"></i><h3 class="ua-h3">校验与异常提示</h3><span class="ua-req">含业务错误码</span></div>
+        <div id="errorBox" aria-live="polite">
+          <div class="errrow">
+            <span class="ec gold">就绪</span>
+            <p>尚未提交<span>提交后在此显示返回的业务错误码</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel ua-actions">
+        <button type="submit" class="btn gold lg" data-status="published">发布作品</button>
+        <button type="submit" class="btn solid lg" data-status="draft">保存草稿</button>
+        <button type="button" class="btn ghost lg" id="resetBtn">清空重填</button>
+        <p class="ua-tip" id="submitHint">发布后立即出现在前台展厅；草稿仅后台可见。</p>
+      </section>
+    </div>
+  </form>
+</div>
+</div>
+
+<script src="/js/upload.js"></script>
+</body>
+</html>

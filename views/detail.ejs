@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= work.title %> · 时序档案馆 TIME ARCHIVE</title>
+<meta name="description" content="<%= (work.description || work.concept || work.title).slice(0, 80) %>">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/gallery.css">
+<link rel="stylesheet" href="/css/detail.css">
+</head>
+<body>
+<div class="board ga-bg">
+<div class="ga-wrap">
+
+  <%- include('partials/topbar', { nav: 'works', q: '', admin: admin }) %>
+
+  <!-- 面包屑 + 返回 -->
+  <section class="ga-crumb">
+    <div class="tiny">
+      画廊 <span class="sep">/</span>
+      <a href="/works?cat=<%= work.categoryId %>"><%= work.categoryName %></a>
+      <span class="sep">/</span>
+      <span><%= work.title %></span>
+    </div>
+    <div class="spacer"></div>
+    <a class="btn sm ghost" href="/works?cat=<%= work.categoryId %>">返回分类</a>
+  </section>
+
+  <!-- 主体：左图右信息 -->
+  <section class="detail">
+    <div class="dt-left">
+      <div class="mainimg">
+        <img src="<%= work.coverMedium %>" alt="<%= work.title %> 作品图" data-cover>
+        <div class="fallback" hidden data-fallback>
+          <span class="txt">图片加载失败</span>
+        </div>
+        <div class="dt-badges">
+          <span class="tag gold">中图 1200 档</span>
+          <span class="tag">仅提供在线浏览</span>
+          <button type="button" class="dt-zoom-btn" data-zoom aria-label="放大查看">放大查看</button>
+        </div>
+      </div>
+      <p class="dt-note tiny">
+        页面仅提供中图与缩略图浏览，不提供原图下载入口；图片加载失败时自动降级为占位，正文信息始终可读。
+      </p>
+    </div>
+
+    <aside class="panel dt-side">
+      <div class="eyebrow"><%= work.categoryName %><% if (year) { %> · <%= year %><% } %></div>
+      <h1 class="h2"><%= work.title %></h1>
+
+      <div class="dt-author">
+        <div class="dt-avatar" aria-hidden="true"><%= (work.author.name || '·').slice(0, 1) %></div>
+        <div>
+          <div class="dt-aname"><%= work.author.name || '未署名' %></div>
+          <div class="tiny num">创作者编号 <%= work.author.id %></div>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <dl class="kv">
+        <dt>作品分类</dt><dd><%= work.categoryName %></dd>
+        <dt>创作时间</dt><dd class="num"><%= work.createdAt || '未填写' %></dd>
+        <dt>使用材料</dt><dd><%= work.materials || '未填写' %></dd>
+        <dt>上传时间</dt><dd class="num"><%= String(work.uploadedAt).slice(0, 10) %></dd>
+        <dt>档案编号</dt><dd class="num"><%= work.id %></dd>
+      </dl>
+
+      <div class="rule"></div>
+
+      <div class="dt-block">
+        <div class="sect-head"><span class="bar"></span><span class="h3">作品简介</span></div>
+        <p class="sub"><%= work.description || '该作品暂未填写简介。' %></p>
+      </div>
+
+      <div class="dt-block">
+        <div class="sect-head"><span class="bar"></span><span class="h3">创作理念</span></div>
+        <p class="sub"><%= work.concept || '该作品暂未填写创作理念。' %></p>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="dt-block">
+        <div class="sect-head">
+          <span class="bar"></span><span class="h3">同系列作品</span>
+          <span class="tiny">同分类公开作品，最多 4 件</span>
+        </div>
+        <% if (work.related.length) { %>
+        <div class="dt-rel">
+          <% work.related.forEach(function (r) { %>
+          <a class="dt-rel-item" href="/works/<%= r.id %>">
+            <span class="ph"><img src="<%= r.coverThumb %>" alt="<%= r.title %>" loading="lazy" data-cover></span>
+            <span class="ti"><%= r.title %></span>
+            <span class="tiny num"><%= r.id %></span>
+          </a>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <p class="tiny">该分类下暂无其他公开作品。</p>
+        <% } %>
+      </div>
+    </aside>
+  </section>
+
+</div>
+</div>
+
+<%# 灯箱：只放大 medium 档，不提供原图与下载（契约 §五 说明） %>
+<div class="dt-zoom" id="zoomBox" hidden role="dialog" aria-modal="true" aria-label="作品预览">
+  <img src="<%= work.coverMedium %>" alt="<%= work.title %> 作品预览">
+  <div class="dt-zoom-bar">
+    <span class="tag gold">中图 1200 档 · 在线预览</span>
+    <button type="button" class="btn sm ghost" data-zoom-close>关闭（Esc）</button>
+  </div>
+</div>
+
+<script src="/js/gallery.js"></script>
+</body>
+</html>

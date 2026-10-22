@@ -1,0 +1,93 @@
+/* 画廊首页 / 分类列表页局部布局 —— 只做排版，颜色 / 圆角 / 投影一律取自 tokens.css */
+
+[hidden] { display: none !important; }
+
+.ga-bg { min-height: 100vh; overflow: visible; }
+
+.ga-wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+
+/* 顶栏搜索框（.search 在 tokens 里是展示态，这里补可输入态） */
+.ga-search {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--tx-1);
+  font-family: inherit;
+  font-size: 12.5px;
+  letter-spacing: .6px;
+}
+.ga-search::placeholder { color: var(--tx-3); }
+.search:focus-within { border-color: rgba(111,216,255,.65); box-shadow: var(--glow-cy); }
+
+/* Hero：左文右线稿计时环（设计稿右栏为插画，实现改为纯 SVG，不引入图片资源） */
+.ga-hero { grid-template-columns: 1.1fr .9fr; padding: var(--s7) var(--s6); align-items: center; }
+.ga-hero .h1 { margin: var(--s3) 0 var(--s4); max-width: 18em; }
+.ga-hero .sub { max-width: 46em; }
+.ga-hero-actions { display: flex; gap: var(--s3); flex-wrap: wrap; margin-top: var(--s5); }
+.ga-hero-art { display: flex; align-items: center; justify-content: center; }
+.ga-ring { width: 100%; max-width: 320px; height: auto; filter: drop-shadow(0 0 26px rgba(111,216,255,.22)); }
+
+/* 筛选条 */
+.ga-filterbar { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+.ga-filterbar .chips a { text-decoration: none; }
+.ga-qline { margin-top: var(--s3); }
+.ga-clear { color: var(--cy); text-decoration: none; }
+
+/* 卡片 */
+.card .thumb { display: block; }          /* a.thumb 默认 inline，aspect-ratio 会失效 */
+.card .thumb > img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.ga-title-link { color: inherit; text-decoration: none; }
+.ga-title-link:hover { color: var(--cream); }
+
+/* 空状态 */
+.ga-empty { position: relative; min-height: 220px; padding: 0; }
+.ga-empty .fallback { border-radius: var(--r-lg); }
+.ga-empty-inner .retry { text-decoration: none; }
+
+/* 分页 */
+.ga-pager { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+.ga-pager .chips a { text-decoration: none; }
+.ga-disabled { opacity: .45; }
+.ga-admin { text-decoration: none; }
+
+/* 图片加载失败：无 .fallback 子节点时用斜纹底兜底（如相关作品小图） */
+.is-broken {
+  background: repeating-linear-gradient(135deg, rgba(111,216,255,.06) 0 6px, transparent 6px 12px),
+              radial-gradient(120% 90% at 50% 30%, rgba(30,60,95,.5), rgba(5,10,22,.95));
+}
+
+/* 面包屑 */
+.ga-crumb { display: flex; align-items: center; gap: var(--s4); padding: 0 2px; }
+.ga-crumb a { color: var(--cy); text-decoration: none; }
+.ga-crumb .sep { opacity: .5; margin: 0 4px; }
+
+/* 错误页 */
+.ga-error { display: flex; flex-direction: column; gap: var(--s3); align-items: flex-start; padding: var(--s7) var(--s6); }
+.ga-error .h2 { margin-top: var(--s2); }
+.ga-error .sub { max-width: 44em; }
+.ga-error-act { display: flex; gap: var(--s3); flex-wrap: wrap; margin: var(--s4) 0 var(--s2); }
+
+@media (max-width: 1024px) {
+  .grid.g4 { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 760px) {
+  .grid.g4, .grid.g3 { grid-template-columns: repeat(2, 1fr); }
+  .ga-hero { grid-template-columns: 1fr; padding: var(--s6) var(--s5); }
+  .ga-hero-art { display: none; }
+  .topbar { flex-wrap: wrap; height: auto; padding: var(--s3) var(--s4); gap: var(--s3); }
+  .search { min-width: 100%; order: 9; }
+}

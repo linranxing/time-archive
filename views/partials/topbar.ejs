@@ -1,0 +1,31 @@
+<%# 顶部导航 —— 画廊 / 分类 / 搜索 / 管理员入口，全站复用 %>
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 34 34" width="28" height="28" fill="none" stroke="#6FD8FF" stroke-width="1.3" aria-hidden="true">
+      <circle cx="17" cy="17" r="13"/>
+      <circle cx="17" cy="17" r="8.6" stroke="#F2C14E" stroke-opacity=".65"/>
+      <path d="M17 8.4v8.6l5.6 3.2"/>
+    </svg>
+    <div>
+      <span class="zh">时序档案馆</span>
+      <span class="en">TIME ARCHIVE</span>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="/" class="<%= nav === 'gallery' ? 'on' : '' %>">画廊</a>
+    <a href="/works" class="<%= nav === 'works' ? 'on' : '' %>">分类</a>
+  </nav>
+  <div class="spacer"></div>
+  <form class="search" method="get" action="/works" role="search">
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <circle cx="6.6" cy="6.6" r="4.6"/><path d="M10.2 10.2L14 14"/>
+    </svg>
+    <input class="ga-search" type="search" name="q" value="<%= typeof q !== 'undefined' ? q : '' %>"
+           maxlength="50" placeholder="搜索作品 / 创作者" aria-label="搜索作品或创作者">
+  </form>
+  <% if (typeof admin !== 'undefined' && admin) { %>
+    <a class="btn gold" href="/admin/upload">管理后台</a>
+  <% } else { %>
+    <a class="btn gold" href="/admin/login">管理员入口</a>
+  <% } %>
+</header>

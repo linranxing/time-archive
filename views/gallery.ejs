@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= isHome ? '画廊首页' : '分类作品' %> · 时序档案馆 TIME ARCHIVE</title>
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/gallery.css">
+</head>
+<body>
+<div class="board ga-bg">
+<div class="ga-wrap">
+
+  <%- include('partials/topbar', { nav: nav, q: q, admin: admin }) %>
+
+  <% if (isHome) { %>
+  <!-- Hero：数据全部来自已发布作品的真实统计 -->
+  <section class="panel hero ga-hero">
+    <div>
+      <div class="eyebrow">TIME ARCHIVE · 学生文创作品线上展厅</div>
+      <h1 class="h1">在时间里，收藏每一件作品</h1>
+      <p class="sub">时序档案馆按绘画 / 设计 / 数字 / 手作四类归档学生文创作品。图片按需加载、多档派生、坏图自动降级——展览不因一张图而中断。</p>
+      <div class="ga-hero-actions">
+        <a class="btn gold lg" href="/works">进入画廊</a>
+        <a class="btn lg" href="/works?cat=ARCHIVE-001">浏览分类</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="v num"><%= stats.total %></div><div class="k">收录作品</div></div>
+        <div class="stat"><div class="v num"><%= stats.authors %></div><div class="k">创作者</div></div>
+        <div class="stat"><div class="v num"><%= stats.categories %></div><div class="k">作品分类</div></div>
+        <div class="stat"><div class="v num"><%= stats.week %></div><div class="k">本周新增</div></div>
+      </div>
+    </div>
+    <div class="ga-hero-art" aria-hidden="true">
+      <%# 线稿计时环：只用令牌色，不引入任何图片资源 %>
+      <svg viewBox="0 0 240 240" class="ga-ring" fill="none">
+        <circle cx="120" cy="120" r="112" stroke="#6FD8FF" stroke-opacity=".18"/>
+        <circle cx="120" cy="120" r="92" stroke="#6FD8FF" stroke-opacity=".32" stroke-dasharray="2 6"/>
+        <circle cx="120" cy="120" r="66" stroke="#F2C14E" stroke-opacity=".38"/>
+        <circle cx="120" cy="120" r="4" fill="#F2C14E"/>
+        <path d="M120 120V64" stroke="#F2C14E" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M120 120l34 22" stroke="#6FD8FF" stroke-width="1.6" stroke-linecap="round"/>
+        <g stroke="#6FD8FF" stroke-opacity=".45">
+          <path d="M120 8v10"/><path d="M120 222v10"/><path d="M8 120h10"/><path d="M222 120h10"/>
+          <path d="M40 40l7 7"/><path d="M193 193l7 7"/><path d="M200 40l-7 7"/><path d="M47 193l-7 7"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- 筛选条：分类 chips + 排序 + 结果计数 -->
+  <section class="panel pad-sm">
+    <div class="sect-head">
+      <span class="bar"></span>
+      <span class="h3"><%= isHome ? '全部作品' : (activeCategory ? activeCategory.name : '全部作品') %></span>
+      <span class="tiny num"><%= result.total %> 件</span>
+    </div>
+
+    <div class="ga-filterbar">
+      <div class="chips">
+        <a class="chip <%= cat === 'ARCHIVE-000' ? 'on' : '' %>" href="<%= buildUrl({ cat: 'ARCHIVE-000', page: 1 }) %>">全部</a>
+        <% categories.forEach(function (c) { %>
+        <a class="chip <%= cat === c.id ? 'on' : '' %>" href="<%= buildUrl({ cat: c.id, page: 1 }) %>"><%= c.name %></a>
+        <% }); %>
+      </div>
+      <div class="spacer"></div>
+      <span class="tiny">排序</span>
+      <div class="chips">
+        <% sortOptions.forEach(function (s) { %>
+        <a class="chip <%= sort === s.value ? 'on' : '' %>" href="<%= buildUrl({ sort: s.value, page: 1 }) %>"><%= s.label %></a>
+        <% }); %>
+      </div>
+    </div>
+
+    <% if (q) { %>
+    <p class="tiny ga-qline">关键词「<%= q %>」· 共 <%= result.total %> 条结果 · <a class="ga-clear" href="<%= buildUrl({ q: '' , page: 1 }) %>">清除</a></p>
+    <% } %>
+  </section>
+
+  <!-- 作品网格 -->
+  <% if (result.items.length) { %>
+  <section class="grid <%= isHome ? 'g4' : 'g3' %>">
+    <% result.items.forEach(function (item) { %>
+      <%- include('partials/card', { work: item }) %>
+    <% }); %>
+  </section>
+  <% } else { %>
+  <section class="panel ga-empty">
+    <div class="fallback ga-empty-inner">
+      <span class="txt">未发现符合条件的档案，请尝试其他关键词</span>
+      <a class="retry" href="/works">查看全部作品</a>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- 分页 -->
+  <footer class="panel pad-sm ga-pager">
+    <span class="tiny num">
+      <% if (result.total) { %>
+        第 <%= result.page %> / <%= result.totalPages %> 页 · 共 <%= result.total %> 件 · 每页 <%= result.pageSize %> 条
+      <% } else { %>
+        共 0 件
+      <% } %>
+    </span>
+    <div class="spacer"></div>
+    <div class="chips">
+      <% if (result.page > 1) { %>
+        <a class="chip" href="<%= buildUrl({ page: result.page - 1 }) %>">上一页</a>
+      <% } else { %>
+        <span class="chip ga-disabled">上一页</span>
+      <% } %>
+
+      <% for (var p = pageWindow.from; p <= pageWindow.to; p++) { %>
+        <a class="chip <%= p === result.page ? 'on' : '' %>" href="<%= buildUrl({ page: p }) %>"><%= p %></a>
+      <% } %>
+
+      <% if (result.page < result.totalPages) { %>
+        <a class="chip" href="<%= buildUrl({ page: result.page + 1 }) %>">下一页</a>
+      <% } else { %>
+        <span class="chip ga-disabled">下一页</span>
+      <% } %>
+    </div>
+    <a class="btn sm ghost ga-admin" href="/admin/upload">作品管理</a>
+  </footer>
+
+</div>
+</div>
+<script src="/js/gallery.js"></script>
+</body>
+</html>

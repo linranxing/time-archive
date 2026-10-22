@@ -1,0 +1,28 @@
+<%#
+  作品卡片（列表 / 相关推荐共用）
+  入参 w：接口二 items 任一项，最少需要 id / title / coverThumb / categoryName / authorName
+  图片走 thumb 档；加载失败由 gallery.js 的全局 error 监听切到站内占位，绝不出现破图
+%>
+<%
+  var w = (typeof work !== 'undefined') ? work : null;
+  var yearOf = function (item) {
+    var d = item.createdAt || item.uploadedAt || '';
+    return d ? String(d).slice(0, 4) : '';
+  };
+  var y = yearOf(w);
+%>
+<article class="card">
+  <a class="thumb" href="/works/<%= w.id %>" aria-label="查看作品：<%= w.title %>">
+    <img src="<%= w.coverThumb %>" alt="<%= w.title %> 封面" loading="lazy" decoding="async" data-cover>
+    <div class="fallback" hidden data-fallback>
+      <span class="txt">封面加载失败</span>
+      <span class="retry">查看作品</span>
+    </div>
+    <% if (w.categoryName) { %><span class="cat"><%= w.categoryName %></span><% } %>
+    <% if (y) { %><span class="yr num"><%= y %></span><% } %>
+  </a>
+  <div class="meta">
+    <h4><a class="ga-title-link" href="/works/<%= w.id %>"><%= w.title %></a></h4>
+    <p><%= w.authorName || '未署名' %> · <%= w.categoryName || '未分类' %><% if (y) { %> · <span class="num"><%= y %></span><% } %></p>
+  </div>
+</article>

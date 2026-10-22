@@ -1,0 +1,25 @@
+{
+  "name": "time-archive",
+  "version": "0.1.0",
+  "private": true,
+  "description": "时序档案馆 TIME ARCHIVE - 学生文创作品线上展厅（子任务A：管理员新增作品）",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "seed": "node db/seed.js",
+    "seed:covers": "node scripts/seed-covers.js",
+    "test:a": "node test/subtask-a.test.js",
+    "test:bc": "node test/subtask-bc.test.js",
+    "test:all": "node test/subtask-a.test.js && node test/subtask-bc.test.js",
+    "e2e": "node scripts/e2e-full.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

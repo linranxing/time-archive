@@ -1,0 +1,89 @@
+/* 作品详情页局部布局 —— 颜色 / 圆角 / 投影取自 tokens.css，本文件不新增色值 */
+
+.dt-left { min-width: 0; }
+
+/* 详情大图：contain 保证不裁切作品画面（排版硬要求） */
+.mainimg img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  background: rgba(5,10,22,.85);
+  display: block;
+}
+.dt-badges {
+  position: absolute; left: 12px; bottom: 12px;
+  display: flex; gap: var(--s2); flex-wrap: wrap; align-items: center; z-index: 2;
+}
+.dt-zoom-btn {
+  height: 22px; padding: 0 10px;
+  border-radius: var(--r-xs);
+  font-family: inherit; font-size: 11px;
+  cursor: pointer;
+  background: rgba(5,10,22,.72);
+  border: 1px solid rgba(111,216,255,.35);
+  color: var(--cy);
+}
+.dt-zoom-btn:hover { border-color: rgba(111,216,255,.7); box-shadow: var(--glow-cy); }
+
+/* 灯箱：暗底 + 中图 contain，不提供原图 */
+.dt-zoom {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: var(--s3);
+  background: rgba(3, 6, 14, .92);
+  backdrop-filter: blur(6px);
+  padding: var(--s5);
+}
+.dt-zoom img {
+  max-width: min(1200px, 92vw);
+  max-height: 78vh;
+  width: auto; height: auto;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+  box-shadow: 0 0 0 1px rgba(111,216,255,.35), 0 0 60px rgba(62,143,208,.25);
+}
+.dt-zoom-bar { display: flex; align-items: center; gap: var(--s3); }
+.dt-note { margin-top: var(--s3); line-height: 1.8; }
+
+/* 右侧信息栏 */
+.dt-side { display: flex; flex-direction: column; gap: var(--s4); }
+.dt-side .h2 { margin-top: 2px; }
+.dt-side .rule { margin: 2px 0; }
+
+.dt-author { display: flex; align-items: center; gap: var(--s3); }
+.dt-avatar {
+  width: 38px; height: 38px; border-radius: var(--r-pill);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: var(--gold);
+  background: rgba(242,193,78,.1);
+  border: 1px solid rgba(242,193,78,.35);
+}
+.dt-aname { font-size: 13.5px; color: var(--tx-1); letter-spacing: .8px; }
+
+.dt-block .sect-head { margin-bottom: var(--s2); }
+.dt-block .sub { white-space: pre-wrap; }
+
+/* 同系列作品 */
+.dt-rel { display: flex; flex-direction: column; gap: var(--s2); }
+.dt-rel-item {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: 6px; border-radius: var(--r-sm);
+  text-decoration: none; color: var(--tx-1);
+  border: 1px solid transparent;
+  transition: .18s;
+}
+.dt-rel-item:hover { border-color: rgba(111,216,255,.35); background: rgba(10,20,40,.55); }
+.dt-rel-item .ph {
+  position: relative; flex: 0 0 auto;
+  width: 56px; height: 42px;
+  border-radius: var(--r-xs); overflow: hidden;
+  border: 1px solid var(--line);
+  background: #050A16;
+}
+.dt-rel-item .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.dt-rel-item .ti { flex: 1; font-size: 12.5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 980px) {
+  .detail { grid-template-columns: 1fr; }
+}

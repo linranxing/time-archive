@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= code %> · 时序档案馆 TIME ARCHIVE</title>
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/gallery.css">
+</head>
+<body>
+<div class="board ga-bg">
+<div class="ga-wrap">
+
+  <%- include('partials/topbar', { nav: 'gallery', q: '', admin: admin }) %>
+
+  <section class="panel ga-error">
+    <div class="eyebrow">ERR / <%= code %></div>
+    <h1 class="h2"><%= title %></h1>
+    <p class="sub"><%= message %></p>
+    <div class="ga-error-act">
+      <a class="btn gold lg" href="<%= backHref %>"><%= backText %></a>
+      <a class="btn ghost lg" href="/works">浏览全部作品</a>
+    </div>
+    <p class="tiny num">业务错误码 <%= code %> · 统一响应 { ok:false, error:{ code, message } }</p>
+  </section>
+
+</div>
+</div>
+</body>
+</html>
